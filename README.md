@@ -6,8 +6,8 @@
 
 A make.fun entry for [One Line to Your Younger Self](https://make.fun/competitions/u-boothlord-one-line-to-your-younger-self-22e97f76): the single line you would send your younger self if one line were all you got.
 
-The line, picked by a candidate tournament scored on specificity, surprise, and freshness:
+The line, picked by a candidate tournament scored on specificity, surprise, and freshness (round 2 rebuild — the round 1 line stalled at rank 1629):
 
-> Your father is not angry, he is scared, and the day you figure that out you will finally call him back.
+> Your 3am essay about quitting gets an A; the teacher writes 'stay', and you do, for eleven years.
 
 `main.py` (Python 3.13, stdlib only) writes it to `/output/entry.txt`. Run `python3 main.py --check` to validate it against the gate, `--tournament` to see the candidate table, `--self-test` for a byte-identical double run.

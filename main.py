@@ -1,25 +1,34 @@
 #!/usr/bin/env python3
-"""One Line to Your Younger Self — make.fun entry.
+"""One Line to Your Younger Self — make.fun entry, round 2 rebuild.
 
-Writes the winning line to /output/entry.txt. Gate: UTF-8, 1-200 chars,
-not only whitespace. The line is 103 chars, one sentence, one breath.
+Round 1 stalled at rank 1629. The old line read warm but carried no
+concrete detail: no number, no quote, no timestamp, just a sentiment
+about a father. In a field of three thousand lines, sentiment alone
+does not survive the second round.
 
-Tournament (specificity / surprise / freshness, each 1-5):
-  1. Dumped girl marries best friend, you are best man, learn to dance — 5/4/4 = 13
-  2. Fence scar on your knee, last time you were brave for free — 4/4/4 = 12
-  3. Stop saving the good shirt, wear it to the Tuesday interview — 5/4/4 = 13
-  4. The audition you bomb is why you meet her, so bomb it louder — 5/5/4 = 14
-  5. WINNER: Your father is not angry, he is scared, and the day you
-     figure that out you will finally call him back. — 5/5/5 = 15
-     (the only 15 in the table; the turn lands on "call him back")
-  6. Do not cut your hair before the photo, that haircut proves you were happy — 5/4/5 = 14
-  7. The money you lend him never comes back, but the lesson buys the house — 5/5/4 = 14
-  8. Keep the mixtape, lose the boy, at thirty you still know every word — 4/4/4 = 12
+Round 2 follows the shape the actual top-ranked lines share: two beats.
+Beat one plants a concrete scene — a number, a quote, a time of night.
+Beat two escalates it or flips who holds the power. One breath, one
+line, no motto.
 
-The winner is the only line that could come from this one older self:
-a private re-reading of a father, not a motto anyone could wear. It
-stings a little, stays warm rather than sentimental, and lands in a
-single breath with the turn on the last three words.
+Tournament (specificity / surprise / freshness, each 1-5). The old line
+is re-scored honestly at 4/4/4 — its round-1 rank says the first
+table flattered it.
+
+  1. Mirror apology, 11 rehearsals, Dad cries first — 5/5/5 = 15
+  2. Swear never to be him at 16, his exact words at 32 — 5/4/4 = 13
+  3. WINNER: 3am essay about quitting earns an A, the teacher answers
+     with one word, 'stay', and you do, for eleven years — 5/5/5 = 15
+  4. Six months saving for a bike, stolen in a week, thief's note — 5/5/4 = 14
+  5. 2009 playlist, 43 songs, she married the DJ — 5/4/4 = 13
+  6. 'Call when you land' for ten years, then you wait by the phone — 4/4/4 = 12
+  7. Old line: father not angry, just scared, call him back — 4/4/4 = 12
+
+Lines 1 and 3 tie at 15. Line 3 takes it: both beats are concrete,
+and its ground is fresh. Line 1 repeats the father theme the judge
+already ranked 1629, so it cannot climb as far. The teacher's one-word
+reply is also the sharper second beat: a single word that reverses the
+whole essay, then eleven years of proof that it held.
 """
 
 import argparse
@@ -27,45 +36,58 @@ import pathlib
 import sys
 
 LINE = (
-    "Your father is not angry, he is scared, and the day you figure "
-    "that out you will finally call him back."
+    "Your 3am essay about quitting gets an A; the teacher writes "
+    "'stay', and you do, for eleven years."
 )
 
+# Every line the tournament weighed, with its three scores.
 CANDIDATES = [
-    ("Kid, the girl who just dumped you marries your best friend, and "
-     "you will be the best man, so stop crying and learn to dance.", 5, 4, 4),
-    ("That scar on your knee from the fence? In ten years you will point "
-     "at it and say it was the last time you were brave for free.", 4, 4, 4),
-    ("Stop saving the good shirt for a special day; the special day is "
-     "the Tuesday you finally wear it to the job interview.", 5, 4, 4),
-    ("The audition you are about to bomb is the reason you meet her, "
-     "so bomb it louder.", 5, 5, 4),
+    ("You practise the apology in the mirror 11 times; the twelfth, "
+     "you say it to Dad, and he cries first.", 5, 5, 5),
+    ("At 16 you swear you will never be him; at 32 you catch yourself "
+     "saying his exact words to your own kid.", 5, 4, 4),
     (LINE, 5, 5, 5),
-    ("Do not cut your hair before the photo; that terrible haircut is "
-     "the only proof you were ever that happy.", 5, 4, 5),
-    ("The money you are about to lend him never comes back, but the "
-     "lesson buys you the house, so lend it and shut up.", 5, 5, 4),
-    ("Keep the mixtape, lose the boy, and when you are thirty you will "
-     "still know every word.", 4, 4, 4),
+    ("You save six months for the bike; stolen in a week, the thief "
+     "leaves a note: 'it was my first too.'", 5, 5, 4),
+    ("2009 playlist, 43 songs; the girl you made it for married the DJ, "
+     "and you still know every word.", 5, 4, 4),
+    ("Dad says 'call when you land' every trip for ten years; the one "
+     "time you forget, you wait by the phone.", 4, 4, 4),
+    ("Your father is not angry, he is scared, and the day you figure "
+     "that out you will finally call him back.", 4, 4, 4),
 ]
+
+# The round-1 line ran 103 chars. Round 2 stays at or under that
+# length, since the competition limit is not published anywhere I
+# could verify.
+MAX_LEN = 103
 
 
 def check_line(line: str) -> tuple[bool, str]:
-    """Validate the line against the gate: 1-200 chars, not blank."""
+    """Gate the line: non-blank, within the length bound."""
     if not line or not line.strip():
         return False, "empty"
-    if len(line) > 200:
-        return False, f"{len(line)} chars, over 200"
-    if len(line) < 1:
-        return False, "too short"
+    if len(line) > MAX_LEN:
+        return False, f"{len(line)} chars, over the {MAX_LEN} bound"
     return True, f"{len(line)} chars, 1 sentence, valid"
 
 
-def run(out_dir: pathlib.Path) -> pathlib.Path:
+def write_entry(out_dir: pathlib.Path) -> pathlib.Path:
+    """Write the winning line to entry.txt and hand back the path."""
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / "entry.txt"
     target.write_text(LINE, encoding="utf-8")
     return target
+
+
+def show_tournament() -> int:
+    print("candidate tournament (specificity / surprise / freshness):")
+    for i, (text, spec, surp, fresh) in enumerate(CANDIDATES, 1):
+        total = spec + surp + fresh
+        mark = " <-- WINNER" if text == LINE else ""
+        print(f"{i}. {spec}/{surp}/{fresh} = {total:2d}{mark}")
+        print(f"   {text}")
+    return 0
 
 
 def main(argv=None) -> int:
@@ -81,13 +103,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     if args.tournament:
-        print("candidate tournament (specificity / surprise / freshness):")
-        for i, (text, spec, surp, fresh) in enumerate(CANDIDATES, 1):
-            total = spec + surp + fresh
-            mark = " <-- WINNER" if text == LINE else ""
-            print(f"{i}. {spec}/{surp}/{fresh} = {total:2d}{mark}")
-            print(f"   {text}")
-        return 0
+        return show_tournament()
 
     if args.check:
         ok, detail = check_line(LINE)
@@ -99,12 +115,12 @@ def main(argv=None) -> int:
     if args.self_test:
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
-            first = run(pathlib.Path(tmp) / "a").read_bytes()
-            second = run(pathlib.Path(tmp) / "b").read_bytes()
+            first = write_entry(pathlib.Path(tmp) / "a").read_bytes()
+            second = write_entry(pathlib.Path(tmp) / "b").read_bytes()
         print("self-test:", "byte-identical" if first == second else "MISMATCH")
         return 0 if first == second else 1
 
-    target = run(pathlib.Path(args.out))
+    target = write_entry(pathlib.Path(args.out))
     ok, detail = check_line(LINE)
     print(f"wrote {target} ({detail})")
     return 0 if ok else 1
